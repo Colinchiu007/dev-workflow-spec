@@ -1,0 +1,46 @@
+# .cowork/PROTOCOL.yaml 模板
+# 协作协议 v3.0 — 双角色模型
+
+protocol_version: "3.0"
+last_updated: "2026-06-25"
+
+roles:
+  - name: "审查者"
+    actor: "你"
+    responsibilities: ["提需求", "审查 Tier 2/3 变更", "裁决争议"]
+  - name: "执行者"
+    actor: "我"
+    responsibilities: ["梳理确认", "实现", "测试", "文档同步", "规则沉淀"]
+
+review:
+  tiers:
+    - tier: 1
+      name: "日常修复"
+      gate: "自验 + 测试全绿"
+      reviewer: "自验"
+    - tier: 2
+      name: "架构变更"
+      gate: "审查者审 diff + PRD/CHANGELOG"
+      reviewer: "你"
+    - tier: 3
+      name: "高风险变更"
+      gate: "审查者在场 + 回滚方案"
+      reviewer: "你"
+
+quality_gates:
+  pre_commit:
+    - "共享契约变更必须审查者批准"
+    - "新增依赖须确认"
+    - "bug fix 附带回归测试"
+  pre_merge:
+    - "测试 100% 通过"
+    - "Tier 2/3 变更：审查者标记 approved"
+    - "PRD/CHANGELOG 已同步"
+
+failure_modes:
+  - scenario: "需求含糊"
+    action: "梳理成具体方案 → 确认后再执行"
+  - scenario: "测试失败"
+    action: "修复 → 重新提交"
+  - scenario: "我不确定"
+    action: "直接告诉你，不等"

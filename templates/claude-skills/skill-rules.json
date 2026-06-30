@@ -1,0 +1,48 @@
+{
+    "version": "2.0",
+    "description": "Skill activation rules template. Customize per project workspace.",
+    "skills": {
+        "auto-exec": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "跨会话多步骤任务编排",
+            "triggerWhen": ["多步骤任务", "复杂开发", "跨会话"]
+        },
+        "self-check-loop": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "轻量自检迭代协议",
+            "triggerWhen": ["中等复杂度任务", "需要迭代", "写作/设计"]
+        },
+        "brainstorming": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "创意工作前的需求探索",
+            "triggerWhen": ["新功能", "需求不清晰", "设计方案讨论"]
+        },
+        "code-review-and-quality": {
+            "type": "guardrail",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "多维度代码审查",
+            "triggerWhen": ["PR", "合并前", "代码审查"]
+        },
+        "debugging-and-error-recovery": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "系统性根因调试",
+            "triggerWhen": ["bug", "异常", "报错"]
+        },
+        "test-driven-development": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "TDD 测试驱动开发",
+            "triggerWhen": ["实现新功能", "修复bug"]
+        }
+    }
+}

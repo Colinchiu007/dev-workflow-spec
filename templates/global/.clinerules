@@ -1,0 +1,97 @@
+# .clinerules — 全局硬约束模板
+# AI 必须在每次代码生成时遵守以下规则。
+# 子项目 .clinerules 继承此文件并补充项目特定规则。
+
+## ⚠️ FUSE 硬门禁 — 规则 #0，优先级高于一切
+
+### 写入前决策树（每写必查）
+
+```
+文件路径在工作区 FUSE 挂载目录下？
+ ├─ 是 → 禁止 Write/Edit 工具
+ │     正确方法：bash Python heredoc（python3 << 'PYEOF'）
+ │     写入后立即验证：
+ │       JS:   node --check <文件路径>
+ │       Python: python3 -c "import ast; ast.parse(open('文件路径').read())"
+ │     验证不通过 = 写入失败 → 用 heredoc 重写
+ └─ 否 → 可以使用 Write/Edit 工具
+```
+
+- rule: "FUSE 挂载目录下的文件，禁止使用 Write/Edit 工具直接写入"
+- rule: "唯一允许的写入方式：bash Python heredoc"
+- rule: "每次写入后必须运行语法验证（JS: node --check, Python: ast.parse）"
+- rule: "语法验证静默通过即写入成功，否则视为写入失败"
+
+## auto-exec 强制门禁（两级决策树）
+
+### 第一关：门禁触发（客观指标）
+- rule: "预估工作量 > 30 分钟或需要 3+ 个步骤的任务，触发 auto-exec 评估流程，进入第二关"
+- rule: "纯文档、纯查询、一次性的简单指令（<30min 且 <3 步骤）→ 直接执行，不走编排"
+
+### 第二关：逃脱口（全部满足才可 bypass）
+- rule: "以下条件必须全部满足，才可以在当前会话批量执行、不走 auto-exec：
+  1) 全部任务属于同一个项目
+  2) ECC 风险全部标记为 low（无 medium/high）
+  3) 无 PRD-impact（不涉及产品逻辑变更）
+  4) 所有 task 不需要测试（纯 CRUD/模板/配置）
+  5) 已获得用户明确确认"就在这做，不走编排"
+  └─ 任一不满足 → 必须走 auto-exec"
+- rule: "批量执行时，每完成一个模块必须 git commit 作为 checkpoint，每次推送必须通知进度"
+- rule: "批量执行时，上下文使用过半（估算 >30%）应主动暂停，提示用户确认是否续杯"
+
+### 第三关：分类处理（复杂任务的执行策略）
+- rule: "A 类（节奏型—CRUD/模板/已知模式扩展）：通过第二关后当前会话批量执行，每模块 checkpoint"
+- rule: "B 类（攻坚型—算法/协议实现/新架构设计）：单任务 >30min 走 auto-exec；medium 以上风险任务完成后 notify"
+- rule: "C 类（探索型—根因未知 bug/多方向调研）：必须走 auto-exec，轮询 1 分钟，停滞检测 + 决策日志"
+- rule: "D 类（破坏型—删分支/force push/改密钥/改配置）：不走 auto-exec，直接 suspend 等待用户确认"
+
+### 紧急 bug 修复（特殊规则）
+- rule: "止血型（根因明确、改动 ≤3 文件、5-10 分钟能修完）→ 可直接在当前会话修复，不走编排"
+- rule: "排查型（根因不确定、需多路径探索）→ 必须走编排，轮询间隔 1 分钟"
+- rule: "分界判断：能否 30 秒内说清楚改哪几个文件怎么改。能 → 止血型；不能 → 排查型"
+
+### 保全规则
+- rule: "用户明确要求不触发可以豁免，但必须在回复中注明上下文溢出风险"
+- rule: "任何不走编排的执行，必须同步更新 PRD（如涉及功能变更）"
+
+## 架构
+- rule: "所有模块间数据交换必须使用共享数据契约（如 shared_models）中定义的 Pydantic 模型"
+- rule: "domain 层不能 import repository 层"
+- rule: "service 层不能直接引用共享数据契约之外的模型"
+- rule: "新增依赖必须经架构师核准"
+
+## 代码风格
+- rule: "文档、注释使用简体中文，代码标识符使用英文"
+- rule: "Python 函数必须有完整类型注解，TypeScript 代码必须有完整类型定义"
+- rule: "异常不得吞没，必须有 logging 或 re-raise"
+- rule: "禁止整个文件 autoformat — 只改目标行，不引入无关的格式化 diff"
+
+## 安全
+- rule: "API Key、Token、密码必须从环境变量读取，禁止硬编码"
+- rule: "用户输入必须经过 Pydantic validation 或参数校验"
+
+## 测试
+- rule: "修复线上 bug 必须在同一 PR 中附带回归测试（Failing Test First）"
+- rule: "新增函数必须有单元测试覆盖"
+
+## 协作
+- rule: "任何功能/需求/用户流程的改动必须同步更新对应项目的 PRD 文档"
+- rule: "共享契约变更必须三组 Agent 全部 ACK + 协调者批准"
+- rule: "Design Note 未审批不得开始实现"
+- rule: "任何代码修改、新功能实现必须遵守 AGENTS.md 中的 7 阶段开发流程和 TDD 规范"
+
+## 7 阶段流程门禁（强制）
+
+### 适用场景
+- 所有新功能实现
+- 所有代码修改（除纯文档、配置、CI 变更外）
+- 重构
+
+### 跳过条件
+- rule: "纯文档变更可以跳过 TDD 和阶段 3-5"
+- rule: "纯 CI/配置变更可以跳过阶段 2-4"
+- rule: "紧急线上 bug 修复可以跳过阶段 1-4，直接进入阶段 5（TDD 修复），但必须补回归测试"
+
+## FUSE 安全
+- rule: "所有文件写入必须通过 bash Python heredoc 完成，禁止使用 Write/Edit 工具直接写入 FUSE 挂载目录"
+- rule: "每次写入后必须验证语法（Python: ast.parse, JS: node --check），验证通过才能继续"

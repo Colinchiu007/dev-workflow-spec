@@ -1,0 +1,17 @@
+#!/bin/bash
+# Pre-commit hook template
+# 安装: 复制到 .git/hooks/pre-commit 并 chmod +x
+# 功能: 禁止包含 API Key/Token/密码的提交
+
+set -euo pipefail
+
+echo ">>> Pre-commit 检查..."
+
+# 检查密钥泄露
+if git diff --cached --diff-filter=AM | grep -E '(api.?key|api_key|secret|token|password|credential)\s*[=:]\s*['"'"'"][A-Za-z0-9_\-]{16,}' > /dev/null 2>&1; then
+    echo "❌ 检测到可能的密钥/Token 泄露！"
+    echo "请使用环境变量替代硬编码的凭证。"
+    exit 1
+fi
+
+echo "✅ Pre-commit 检查通过"

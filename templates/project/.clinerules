@@ -1,0 +1,10 @@
+# 项目特定 .clinerules
+
+## 架构
+- rule: "项目特定的架构约束"
+
+## 代码风格
+- rule: "项目特定的代码风格"
+
+## 技术栈
+- rule: "Python 3.12+ / FastAPI"

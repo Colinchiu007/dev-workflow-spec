@@ -1,0 +1,13 @@
+# 全局状态模板
+
+protocol_revision: "3.0"
+last_updated: "2026-06-30"
+
+current: "当前在做什么"
+status: "idle"     # idle | working | review | stuck
+blocker: null
+last_update: "2026-06-30T00:00:00+08:00"
+
+backlog: []
+
+done: []
