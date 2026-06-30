@@ -44,6 +44,8 @@
 | | 安全写入脚本 | `scripts/safe-write.sh` |
 | | Git 钩子 | `.githooks/pre-commit` |
 | | Skill 激活规则 | `templates/claude-skills/skill-rules.json` |
+| **发布层** | 版本管理与发布流程 | `docs/15-RELEASE.md` |
+| | 迁移指南 | `docs/16-MIGRATION-GUIDE.md` |
 
 ## 快速开始
 
@@ -71,7 +73,7 @@ bash dev-workflow-spec/scripts/init-project.sh 我的新项目
 
 | 项目 | 关系 |
 |------|------|
-| [auto-exec-mechanism](https://github.com/Colinchiu007/auto-exec-mechanism) | .plan/ 协议的独立工具实现（hash_anchor, init_deep, planning_pipeline 等） |
+| [auto-exec-mechanism](https://github.com/Colinchiu007/auto-exec-mechanism) | 完整 SKILL.md + 架构说明（worker prompt、Knowledge Module、角色映射） |
 | oh-my-openagent | .plan/ STATE.md 协议的灵感来源 |
 
 ## 许可

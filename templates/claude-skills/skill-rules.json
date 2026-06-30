@@ -1,20 +1,48 @@
 {
-    "version": "2.0",
-    "description": "Skill activation rules template. Customize per project workspace.",
+    "version": "2.1",
+    "description": "Skill activation rules. Sync with installed Cowork skills.",
     "skills": {
         "auto-exec": {
             "type": "domain",
             "enforcement": "suggest",
             "priority": "high",
-            "description": "跨会话多步骤任务编排",
+            "description": "跨会话批量任务编排（batch 模式 v3）",
             "triggerWhen": ["多步骤任务", "复杂开发", "跨会话"]
         },
         "self-check-loop": {
             "type": "domain",
             "enforcement": "suggest",
             "priority": "high",
-            "description": "轻量自检迭代协议",
+            "description": "轻量自检迭代协议（PLAN→DO→VERIFY→DECIDE）",
             "triggerWhen": ["中等复杂度任务", "需要迭代", "写作/设计"]
+        },
+        "diagnosing-bugs": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "6 阶段调试循环：反馈环→复现→假设→探针→修复→清理",
+            "triggerWhen": ["调试", "诊断", "修bug", "排查", "异常", "报错"]
+        },
+        "handoff": {
+            "type": "protocol",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "跨 Agent 会话交接文档",
+            "triggerWhen": ["上下文耗尽", "切换Agent", "交接"]
+        },
+        "improve-codebase-architecture": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "代码库架构深化扫描 + HTML 报告",
+            "triggerWhen": ["架构太差", "重构", "代码熵太高"]
+        },
+        "taste-skill": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "low",
+            "description": "反模板前端设计合集（6 子技能）",
+            "triggerWhen": ["设计", "UI", "前端样式", "重设计"]
         },
         "brainstorming": {
             "type": "domain",
@@ -43,6 +71,13 @@
             "priority": "high",
             "description": "TDD 测试驱动开发",
             "triggerWhen": ["实现新功能", "修复bug"]
+        },
+        "update-memory": {
+            "type": "protocol",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "会话结束时的记忆整理",
+            "triggerWhen": ["会话结束", "保存记忆"]
         }
     }
 }
