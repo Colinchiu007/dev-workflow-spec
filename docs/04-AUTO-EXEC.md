@@ -13,7 +13,7 @@
 Phase 0: Intent Gate           → 分类需求，只有明确指令/开放任务进入编排
 Phase 1: ECC 风险分级           → 🔵全自动 🟡完成通知 🔴暂停确认
 Phase 2: 任务分解               → 写入 .plan/task_plan.md
-Phase 2.5: Knowledge Module    → .plan/knowledge/ 注入项目最佳实践
+Phase 2.5: Knowledge Module    → .plan/knowledge/ 注入项目最佳实践（Phase 4 结束时自动收割写回）
 Phase 3: 执行启动               → 创建 scheduled task + worker prompt
 Phase 4: 批量执行轮询           → 每轮多任务，上下文 >70% 退出
 Phase 5: 完成与清理             → 清理 .plan/ → 更新 MEMORY.md → 禁用 task → 通知
@@ -27,7 +27,7 @@ Phase 5: 完成与清理             → 清理 .plan/ → 更新 MEMORY.md → 
 | **分支检查** | 执行前 `git branch --show-current`，不在 main/特性分支则创建 `feat/auto-exec-<任务>` |
 | **原子 Commit** | 每独立逻辑变更单独 commit，禁止 `git add -A` |
 | **强制 Push** | 每 3 commit 或 batch 结束时 `git push`，失败时 `git pull --rebase` |
-| **知识模块** | `.plan/knowledge/` 预加载项目上下文，节省 ~6K token/轮 |
+| **知识模块** | `.plan/knowledge/` 双向管道：预加载项目上下文 + 执行后自动收割失败/发现/模式 |
 | **自适应退出** | 上下文使用率 >70% 时退出，等待下次轮询 |
 | **停滞检测** | 连续 3 轮未解决同一问题 → 标记 stuck |
 | **采纳率追踪** | 记录每轮 accept/reject，累计 <50% 标记低效 |
